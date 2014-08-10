@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
-             version="1.0">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
 
 	<persistence-unit name="application" transaction-type="RESOURCE_LOCAL">
-
-        <class>kr.ac.jejuuniv.domain.model.Item</class>
-        <class>kr.ac.jejuuniv.domain.model.Order</class>
-        <class>kr.ac.jejuuniv.domain.model.OrderRepository</class>
-		
 
 	</persistence-unit>
 
