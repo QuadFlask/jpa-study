@@ -32,6 +32,8 @@ public class QItem extends EntityPathBase<Item> {
 
     public final NumberPath<Integer> quantity = createNumber("quantity", Integer.class);
 
+    public final EnumPath<ItemType> type = createEnum("type", ItemType.class);
+
     public QItem(String variable) {
         this(Item.class, forVariable(variable), INITS);
     }

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -52,11 +53,17 @@ public class OrderTest {
 	private Item cucumber = new Item("Cucumber", 400, 5);
 
 	@Test
+	public void orderTotalPrice() {
+		Order createSampleOrder = createSampleOrder();
+		assertThat((int)createSampleOrder.getTotalPrice(), is(2400));
+	}
+
+	@Test
 	public void addOrderTest() {
-		List<Item> items = new ArrayList<Item>();
-		items.add(apple);
-		items.add(banana);
-		items.add(cucumber);
+		List<Item> items = new LinkedList<Item>();
+		items.add(apple.clone());
+		items.add(banana.clone());
+		items.add(cucumber.clone());
 		Order order = new Order("flask", items);
 		orderRepository.save(order);
 
@@ -73,11 +80,12 @@ public class OrderTest {
 	public void addAndChangeTest() {
 		Order order = createSampleOrder();
 		Item durian = new Item("Durian", 1000, 2);
-		order.getItems().add(durian);
+		Item clonedDurian = durian.clone();
+		order.getItems().add(clonedDurian);
 		orderRepository.save(order);
 
-		durian.setPrice(1200);
-		durian.setQuantity(3);
+		clonedDurian.setPrice(1200);
+		clonedDurian.setQuantity(3);
 
 		Order insertedOrder = orderRepository.findOne(order.getId());
 		Item insertedItem = findItemByProductName(insertedOrder, "Durian");
@@ -93,10 +101,7 @@ public class OrderTest {
 		orderRepository.save(order);
 
 		JPAQuery jpaQuery = new JPAQuery(entityManager);
-		Order insertedOrder = jpaQuery
-				.from(qorder)
-				.where(qorder.items.size().gt(1))
-				.uniqueResult(qorder);
+		Order insertedOrder = jpaQuery.from(qorder).where(qorder.items.size().gt(1)).uniqueResult(qorder);
 
 		assertNotNull(insertedOrder);
 		assertEquals(3, insertedOrder.getItems().size());
@@ -111,43 +116,37 @@ public class OrderTest {
 		Order order = createSampleOrder();
 		orderRepository.save(order);
 		List<Item> items = new ArrayList<Item>();
-		items.add(apple);
-		items.add(banana);
+		items.add(apple.clone());
+		items.add(banana.clone());
 		orderRepository.save(new Order("flask", items));
 		assertThat(orderRepository.findAll().size(), is(2));
 
 		JPAQuery jpaQuery = new JPAQuery(entityManager);
-		List<Order> insertedOrders = jpaQuery
-				.from(qorder)
-				.where(qorder.items.any().product.eq("Cucumber"))
+		List<Order> insertedOrders = jpaQuery.from(qorder).where(qorder.items.any().product.eq("Cucumber"))
 				.list(qorder);
 		// items 에 Cucumber가 있는 Order 조회
-		
+
 		assertNotNull(insertedOrders);
 		assertThat(insertedOrders.size(), is(1));
 		assertEquals(3, insertedOrders.get(0).getItems().size());
 		Item insertedCucumber = findItemByProductName(insertedOrders.get(0), "Cucumber");
-
 		assertNotNull(insertedCucumber);
 		assertEquals(400, (int) insertedCucumber.getPrice());
-		
-		jpaQuery = new JPAQuery(entityManager);
-		List<Order> insertedOrders2 = jpaQuery
-				.from(qorder)
-				.where(qorder.items.any().product.ne("Cucumber"))
-				.list(qorder);
-		// items 에 Cucumber가 없는 Order 조회
-		
-		assertNotNull(insertedOrders2);
-		assertThat(insertedOrders2.size(), is(1));
-		assertEquals(2, insertedOrders2.get(0).getItems().size());
+
+//		jpaQuery = new JPAQuery(entityManager);
+//		List<Order> insertedOrders2 = jpaQuery.from(qorder).where(qorder.items.any().product.ne("Cucumber"))
+//				.list(qorder);
+		// items 에 Cucumber가 없는 Order 조회 가 아니지.
+//		assertNotNull(insertedOrders2);
+//		assertThat(insertedOrders2.size(), is(1));
+//		assertEquals(2, insertedOrders2.get(0).getItems().size());
 	}
 
 	private Order createSampleOrder() {
 		List<Item> items = new ArrayList<Item>();
-		items.add(apple);
-		items.add(banana);
-		items.add(cucumber);
+		items.add(apple.clone());
+		items.add(banana.clone());
+		items.add(cucumber.clone());
 		return new Order("flask", items);
 	}
 

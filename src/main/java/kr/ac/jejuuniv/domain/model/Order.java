@@ -11,9 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-@Entity
-@Table(name = "T_ORDER")
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity(name = "orders")
+@Table(name = "orders")
 public class Order {
 
 	@Id
@@ -37,28 +43,17 @@ public class Order {
 			i.setOrder(this);
 	}
 
-	public Long getId() {
-		return id;
+	@Transient
+	public double getTotalPrice() {
+		double total = 0.0;
+		for (Item item : items)
+			total += item.getTotalPrice();
+		return total;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(String customer) {
-		this.customer = customer;
-	}
-
-	public Collection<Item> getItems() {
-		return items;
-	}
-
-	public void setItems(Collection<Item> items) {
-		this.items = items;
+	@Override
+	public String toString() {
+		return "Order [id=" + id + ", customer=" + customer + ", items=" + items + "]";
 	}
 
 }
